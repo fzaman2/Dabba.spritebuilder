@@ -18,26 +18,16 @@ static CGFloat tileMarginHorizontal = 0;
 
 @implementation Grid
 {
-   
-   Tile *tiled;
    Tile *gridArray[gridSize][gridSize];
    Tile *noTile;
-   UITapGestureRecognizer *tapped;
-   CGFloat elapsedTime;
+//   CGFloat elapsedTime;
+   int counter;
 
-   
 }
+
 - (void)didLoadFromCCB {
    noTile = nil;
-   
-   // GestureRecognizer Code
-   tapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(screenTapped)];
-   tapped.numberOfTapsRequired = 1;
-   tapped.numberOfTouchesRequired = 1;
-   tapped.cancelsTouchesInView = NO;
-   
-   [[[CCDirector sharedDirector] view] addGestureRecognizer:tapped];
-
+   counter = 0;
    [self setupBackground];
    
    for (int i = 0; i < gridSize; i++) {
@@ -47,15 +37,12 @@ static CGFloat tileMarginHorizontal = 0;
    }
    
    [self spawnStartTiles];
+//   [self setupGestures];
 }
 
-- (void)update:(CCTime)delta {
-   elapsedTime += delta;
-   if(elapsedTime > 1.f)
-   {
-      [self dropDown];
-   }
-}
+//- (void)update:(CCTime)delta {
+//
+//}
 
 - (void)setupBackground {
    Tile *tile = (Tile *)[CCBReader load:@"Tile"];
@@ -106,8 +93,8 @@ static CGFloat tileMarginHorizontal = 0;
       int randomColumn = arc4random()%gridSize;
 //      int randomRow = (CCRANDOM_0_1() * gridSize);
 //      int randomColumn = (CCRANDOM_0_1() * gridSize);
-      NSLog(@"%s,%d","random row: ", randomRow);
-      NSLog(@"%s,%d","random column: ", randomColumn);
+//      NSLog(@"%s,%d","random row: ", randomRow);
+//      NSLog(@"%s,%d","random column: ", randomColumn);
       BOOL positionFree = gridArray[randomColumn][randomRow] == noTile;
       if (positionFree) {
          [self addTileAtColumn:randomColumn :randomRow];
@@ -120,32 +107,6 @@ static CGFloat tileMarginHorizontal = 0;
    for (int i = 0; i < startTiles; i++) {
       [self spawnRandomTile];
    }
-}
-
-# pragma mark Screen Tapped
-
--(void)screenTapped {
-   CGPoint point = [tapped locationInView:[CCDirector sharedDirector].view];
-   CGPoint point2;
-   if(point.x < 160) //Left
-   {
-      NSLog(@"Tapping on the left side of the screen is for communists!");
-      point2 = CGPointMake(-1, 0);
-      [self move:point2];
-   }
-   else // Right
-   {
-      NSLog(@"User tapped on the right side! Ohh Yeah!");
-      point2 = CGPointMake(1, 0);
-      [self move:point2];
-   }
-}
-
--(void)dropDown {
-   
-   CGPoint point = CGPointMake(0, -1);
-   [self move:point];
-   
 }
 
 # pragma mark Move
@@ -182,6 +143,7 @@ static CGFloat tileMarginHorizontal = 0;
 }
 
 -(void) move:(CGPoint)direction{
+   BOOL movedTilesThisRound = false;
    // apply negative vector until reaching boundary, this way we get the tile that is the furthest away
    // bottom left corner
    int currentX = 0;
@@ -225,6 +187,7 @@ static CGFloat tileMarginHorizontal = 0;
             }
             if (newX != currentX || newY != currentY) {
                [self moveTile:tile2 fromX:currentX fromY:currentY toX:newX toY:newY];
+               movedTilesThisRound = true;
             }
          }
          // move further in this column
@@ -234,6 +197,64 @@ static CGFloat tileMarginHorizontal = 0;
       currentY = initialY;
    }
 }
+
+-(void)scanTiles {
+   for (int i = 0; i < gridSize; i++) {
+      for (int j = 0; j<gridSize; j++) {
+         if(gridArray[i][j] != noTile)
+         {
+            Tile *tile = gridArray[i][j];
+            NSLog(@"%s,%d","Tiles: ",tile.value);
+            if(tile.value == 0)
+            {
+               CCActionRemove *remove = [CCActionRemove action];
+               [tile runAction:remove];
+               gridArray[i][j] = noTile;
+            }
+         }
+      }
+   }
+
+}
+
+# pragma mark Move
+
+-(void) setupGestures {
+
+   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft)];
+   [swipeLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
+   [[[CCDirector sharedDirector] view] addGestureRecognizer:swipeLeft];
+
+   UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)];
+   [swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
+   [[[CCDirector sharedDirector] view] addGestureRecognizer:swipeRight];
    
+   
+   UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeUp)];
+   [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
+   [[[CCDirector sharedDirector] view] addGestureRecognizer:swipeUp];
+   
+   UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDown)];
+   [swipeDown setDirection:UISwipeGestureRecognizerDirectionDown];
+   [[[CCDirector sharedDirector] view] addGestureRecognizer:swipeDown];
+   
+}
+
+-(void) swipeLeft {
+  [self move:CGPointMake(-1, 0)];
+}
+
+-(void) swipeRight {
+   [self move:CGPointMake(1, 0)];
+}
+
+-(void) swipeUp{
+   [self move:CGPointMake(0, 1)];
+}
+
+-(void) swipeDown {
+   [self move:CGPointMake(0, -1)];
+}
+
 
 @end

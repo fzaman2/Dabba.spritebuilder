@@ -9,5 +9,12 @@
 #import "CCNode.h"
 
 @interface Grid : CCNode <UIGestureRecognizerDelegate>
+{
+}
+@property (nonatomic, weak) CCNodeColor *grid;
+
+-(void) move:(CGPoint)direction;
+-(void) spawnRandomTile;
+-(void)scanTiles;
 
 @end
