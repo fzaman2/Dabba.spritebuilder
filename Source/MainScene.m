@@ -130,9 +130,12 @@
    if (once) {
       [_grid spawnRandomTile];
       [_grid move:direction];
-      [_grid scanTiles];
+      [self performSelector:@selector(scanTiles) withObject:self afterDelay:1];
    }
    once = true;
 }
 
+-(void) scanTiles {
+   [_grid scanTiles];   
+}
 @end

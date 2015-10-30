@@ -12,7 +12,7 @@
 
 - (void)didLoadFromCCB {
    CCColor *backgroundColor;
-   _value = arc4random()%4;
+   _value = arc4random()%3;
 
    switch (_value) {
    case 0:
@@ -24,9 +24,9 @@
    case 2:
          backgroundColor = [CCColor blueColor];
          break;
-   case 3:
-         backgroundColor = [CCColor yellowColor];
-         break;
+//   case 3:
+//         backgroundColor = [CCColor yellowColor];
+//         break;
    default:
          break;
    }
