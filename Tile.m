@@ -16,13 +16,13 @@
 
    switch (_value) {
    case 0:
-         backgroundColor = [CCColor redColor];
+         backgroundColor = [CCColor colorWithRed:220.0/255 green:20.0/255 blue:60.0/255];
          break;
    case 1:
-         backgroundColor = [CCColor greenColor];
+         backgroundColor = [CCColor colorWithRed:0.0/255 green:128.0/255 blue:0.0/255];
          break;
    case 2:
-         backgroundColor = [CCColor blueColor];
+         backgroundColor = [CCColor colorWithRed:72.0/255 green:61.0/255 blue:139.0/255];
          break;
 //   case 3:
 //         backgroundColor = [CCColor yellowColor];

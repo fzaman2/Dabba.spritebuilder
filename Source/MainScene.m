@@ -11,10 +11,21 @@
    BOOL readyToRotate;
    BOOL touchActivated;
    CGPoint direction;
+   NSInteger _points;
 
 }
 
 - (void)didLoadFromCCB {
+//   _backgroundColor.startColor = [CCColor colorWithRed: 20.0/255 green: 20.0/255 blue: 200.0/255];
+//   _backgroundColor.endColor = [CCColor colorWithRed: 20.0/255 green: 20.0/255 blue: 250.0/255];
+//   _backgroundColor.startColor = [CCColor colorWithRed:20.0/255 green:60.0/255 blue:220.0/255];
+//   _backgroundColor.endColor = [CCColor colorWithRed:20.0/255 green:120.0/255 blue:120.0/255];
+//   _backgroundColor.startColor = [CCColor colorWithRed:20.0/255 green:160.0/255 blue:120.0/255];
+//   _backgroundColor.endColor = [CCColor colorWithRed:20.0/255 green:160.0/255 blue:60.0/255];
+   _backgroundColor.startColor = [CCColor colorWithRed:0.0/255 green:128.0/255 blue:128.0/255];
+   _backgroundColor.endColor = [CCColor colorWithRed:0.0/255 green:130.0/255 blue:139.0/255];
+//   _backgroundColor.startColor = [CCColor colorWithRed:220.0/255 green:30.0/255 blue:30.0/255];
+
    once = false;
    touchActivated = false;
    readyToRotate = true;
@@ -136,6 +147,15 @@
 }
 
 -(void) scanTiles {
-   [_grid scanTiles];   
+   [_grid scanTiles];
+   if([_grid checkMatch])
+   {
+      _points += 10;
+      _scoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_points];
+
+//      [_grid spawnRandomTile];
+      [_grid move:direction];
+      [self performSelector:@selector(scanTiles) withObject:self afterDelay:1];
+   }
 }
 @end

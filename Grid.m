@@ -22,12 +22,14 @@ static CGFloat tileMarginHorizontal = 0;
    Tile *noTile;
 //   CGFloat elapsedTime;
    int counter;
+   BOOL matched;
 
 }
 
 - (void)didLoadFromCCB {
    noTile = nil;
    counter = 0;
+   matched = false;
    [self setupBackground];
    
    for (int i = 0; i < gridSize; i++) {
@@ -37,7 +39,6 @@ static CGFloat tileMarginHorizontal = 0;
    }
    
    [self spawnStartTiles];
-//   [self setupGestures];
 }
 
 //- (void)update:(CCTime)delta {
@@ -91,10 +92,6 @@ static CGFloat tileMarginHorizontal = 0;
    while (!spawned) {
       int randomRow = arc4random()%gridSize;
       int randomColumn = arc4random()%gridSize;
-//      int randomRow = (CCRANDOM_0_1() * gridSize);
-//      int randomColumn = (CCRANDOM_0_1() * gridSize);
-//      NSLog(@"%s,%d","random row: ", randomRow);
-//      NSLog(@"%s,%d","random column: ", randomColumn);
       BOOL positionFree = gridArray[randomColumn][randomRow] == noTile;
       if (positionFree) {
          [self addTileAtColumn:randomColumn :randomRow];
@@ -176,7 +173,7 @@ static CGFloat tileMarginHorizontal = 0;
       while ([self indexValid:currentX y:currentY]) {
          // get tile at current index
          Tile *tile2 = gridArray[currentX][currentY];
-         if (tile2 != nil) {///////////??????????????
+         if (tile2 != nil) {
             // if tile exists at index
             int newX = currentX;
             int newY = currentY;
@@ -200,51 +197,21 @@ static CGFloat tileMarginHorizontal = 0;
 }
 
 -(void)scanTiles {
+   counter = 0;
+   matched = false;
    Tile *tile[gridSize][gridSize];
    CCActionRemove *remove = [CCActionRemove action];
-   CCActionMoveTo *moveTo = [CCActionMoveTo actionWithDuration:0.1 position:CGPointMake(500, 100)];
    for (int i = 0; i < gridSize; i++) {
       for (int j = 0; j<gridSize; j++) {
-//         if(gridArray[i][j] != noTile)
-//         {
-            tile[i][j] = gridArray[i][j];
-//            NSLog(@"%s,%d","Tiles: ",tile.value);
-//         if(tile.value == 0)
-//         {
-//            CCActionRemove *remove = [CCActionRemove action];
-//            [tile runAction:remove];
-//            gridArray[i][j] = noTile;
-//         }
-//         }
-//         else{
-//            tile[i][j] = noTile;
-//         }
+         tile[i][j] = gridArray[i][j];
+         
+         // check if there is empty space in grid
+         if (tile [i][j] == noTile) {
+            counter++;
+         }
       }
    }
 
-//   if (tile[0][2]== noTile) {
-////      NSLog(@"no tile at 0,0");
-//   }
-//   else {
-////      NSLog(@"tile at 0,0");
-////      NSLog(@"%s,%d", "tile value: ", tile[0][0].value);
-//      gridArray[0][2] =  noTile;
-//      [tile[0][2] runAction:remove];
-//      [self removeChild:tile[0][2]];
-////      [self performSelector:@selector(removeGridArray) withObject:self afterDelay:2];
-//   }
-//   if (tile[0][1]== noTile) {
-////      NSLog(@"no tile at 0,0");
-//   }
-//   else {
-////      NSLog(@"tile at 0,0");
-////      NSLog(@"%s,%d", "tile value: ", tile[0][0].value);
-//      gridArray[0][1] =  noTile;
-//      [tile[0][1] runAction:remove];
-//      [self removeChild:tile[0][1]];
-////      [self performSelector:@selector(removeGridArray2) withObject:self afterDelay:1];
-//
-//   }
    for (int i = 0; i < 3; i++) {
    // Check Rows
       if(tile[0][0] != noTile && tile[0][1] != noTile && tile[0][2] != noTile && tile[0][3] != noTile )
@@ -263,6 +230,7 @@ static CGFloat tileMarginHorizontal = 0;
          [self removeChild:tile[0][1]];
          [self removeChild:tile[0][2]];
          [self removeChild:tile[0][3]];
+         matched = true;
       }
       }
       if(tile[1][0] != noTile && tile[1][1] != noTile && tile[1][2] != noTile && tile[1][3] != noTile )
@@ -281,6 +249,7 @@ static CGFloat tileMarginHorizontal = 0;
          [self removeChild:tile[1][1]];
          [self removeChild:tile[1][2]];
          [self removeChild:tile[1][3]];
+         matched = true;
       }
       }
       if(tile[2][0] != noTile && tile[2][1] != noTile && tile[2][2] != noTile && tile[2][3] != noTile )
@@ -299,6 +268,7 @@ static CGFloat tileMarginHorizontal = 0;
          [self removeChild:tile[2][1]];
          [self removeChild:tile[2][2]];
          [self removeChild:tile[2][3]];
+         matched = true;
       }
       }
       if(tile[3][0] != noTile && tile[3][1] != noTile && tile[3][2] != noTile && tile[3][3] != noTile )
@@ -317,6 +287,7 @@ static CGFloat tileMarginHorizontal = 0;
          [self removeChild:tile[3][1]];
          [self removeChild:tile[3][2]];
          [self removeChild:tile[3][3]];
+         matched = true;
       }
       }
       // Check Columns
@@ -336,6 +307,7 @@ static CGFloat tileMarginHorizontal = 0;
          [self removeChild:tile[1][0]];
          [self removeChild:tile[2][0]];
          [self removeChild:tile[3][0]];
+         matched = true;
       }
       }
       if(tile[0][1] != noTile && tile[1][1] != noTile && tile[2][1] != noTile && tile[3][1] != noTile )
@@ -354,6 +326,7 @@ static CGFloat tileMarginHorizontal = 0;
          [self removeChild:tile[1][1]];
          [self removeChild:tile[2][1]];
          [self removeChild:tile[3][1]];
+         matched = true;
       }
       }
       if(tile[0][2] != noTile && tile[1][2] != noTile && tile[2][2] != noTile && tile[3][2] != noTile )
@@ -372,6 +345,7 @@ static CGFloat tileMarginHorizontal = 0;
          [self removeChild:tile[1][2]];
          [self removeChild:tile[2][2]];
          [self removeChild:tile[3][2]];
+         matched = true;
       }
       }
       if(tile[0][3] != noTile && tile[1][3] != noTile && tile[2][3] != noTile && tile[3][3] != noTile )
@@ -390,9 +364,60 @@ static CGFloat tileMarginHorizontal = 0;
          [self removeChild:tile[1][3]];
          [self removeChild:tile[2][3]];
          [self removeChild:tile[3][3]];
+         matched = true;
       }
+      }
+      // Check Diagnols
+      if(tile[0][0] != noTile && tile[1][1] != noTile && tile[2][2] != noTile && tile[3][3] != noTile )
+      {
+         if(tile[0][0].value == i && tile[1][1].value == i && tile[2][2].value == i && tile[3][3].value == i)
+         {
+            gridArray[0][0] = noTile;
+            gridArray[1][1] = noTile;
+            gridArray[2][2] = noTile;
+            gridArray[3][3] = noTile;
+            [tile[0][0] runAction:remove];
+            [tile[1][1] runAction:remove];
+            [tile[2][2] runAction:remove];
+            [tile[3][3] runAction:remove];
+            [self removeChild:tile[0][0]];
+            [self removeChild:tile[1][1]];
+            [self removeChild:tile[2][2]];
+            [self removeChild:tile[3][3]];
+            matched = true;
+         }
+      }
+      if(tile[0][3] != noTile && tile[1][2] != noTile && tile[2][1] != noTile && tile[3][0] != noTile )
+      {
+         if(tile[0][3].value == i && tile[1][2].value == i && tile[2][1].value == i && tile[3][0].value == i)
+         {
+            gridArray[0][3] = noTile;
+            gridArray[1][2] = noTile;
+            gridArray[2][1] = noTile;
+            gridArray[3][0] = noTile;
+            [tile[0][3] runAction:remove];
+            [tile[1][2] runAction:remove];
+            [tile[2][1] runAction:remove];
+            [tile[3][0] runAction:remove];
+            [self removeChild:tile[0][3]];
+            [self removeChild:tile[1][2]];
+            [self removeChild:tile[2][1]];
+            [self removeChild:tile[3][0]];
+            matched = true;
+         }
       }
    }
+   // no more empty space? call gameover method
+   if (counter == 0 && matched == false) {
+      [self gameOver];
+      return;
+   }
+
+}
+
+-(BOOL)checkMatch {
+   
+   return matched;
 }
 
 # pragma mark Move
@@ -440,6 +465,14 @@ static CGFloat tileMarginHorizontal = 0;
 
 -(void)removeGridArray2 {
    gridArray[0][1] =  noTile;
+}
+
+# pragma mark gameover
+
+-(void)gameOver {
+   CCScene *scene = [CCBReader loadAsScene:@"MainScene"];
+   [[CCDirector sharedDirector] replaceScene:scene withTransition:[CCTransition transitionFadeWithDuration:1.0]];
+
 }
 
 @end

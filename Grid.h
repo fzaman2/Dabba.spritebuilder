@@ -16,5 +16,6 @@
 -(void) move:(CGPoint)direction;
 -(void) spawnRandomTile;
 -(void)scanTiles;
+-(BOOL)checkMatch;
 
 @end
