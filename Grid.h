@@ -17,5 +17,7 @@
 -(void) spawnRandomTile;
 -(void)scanTiles;
 -(BOOL)checkMatch;
+-(BOOL)checkGameOver;
+-(void)gameOver;
 
 @end

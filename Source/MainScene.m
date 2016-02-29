@@ -43,6 +43,9 @@
 
    [self performSelector:@selector(touchActivated) withObject:self afterDelay:1];
 
+   _highScore = [[NSUserDefaults standardUserDefaults] integerForKey:@"highScore"] ;
+   _highscoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_highScore];
+
 }
 
 //- (void)update:(CCTime)delta {
@@ -70,6 +73,8 @@
 }
 
 -(void)rotateCCW {
+   _points ++;
+   _scoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_points];
    CCActionRotateBy *rot = [CCActionRotateBy actionWithDuration:0.5 angle:-90];
    [_grid runAction:rot];
    newDirectionCounter--;
@@ -83,6 +88,8 @@
 }
 
 -(void)rotateCW {
+   _points ++;
+   _scoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_points];
    CCActionRotateBy *rot = [CCActionRotateBy actionWithDuration:0.5 angle:90];
    [_grid runAction:rot];
    newDirectionCounter++;
@@ -148,10 +155,24 @@
 
 -(void) scanTiles {
    [_grid scanTiles];
+   if([_grid checkGameOver])
+   {
+      if(_points > _highScore)
+      {
+         
+         [[NSUserDefaults standardUserDefaults] setInteger: _points forKey: @"highScore"];
+         
+      }
+      _highScore = [[NSUserDefaults standardUserDefaults] integerForKey:@"highScore"] ;
+      _highscoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_highScore];
+      [_grid gameOver];
+      
+   }
    if([_grid checkMatch])
    {
       _points += 10;
       _scoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_points];
+
 
 //      [_grid spawnRandomTile];
       [_grid move:direction];

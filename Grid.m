@@ -23,6 +23,7 @@ static CGFloat tileMarginHorizontal = 0;
 //   CGFloat elapsedTime;
    int counter;
    BOOL matched;
+   BOOL gameOver;
 
 }
 
@@ -30,6 +31,7 @@ static CGFloat tileMarginHorizontal = 0;
    noTile = nil;
    counter = 0;
    matched = false;
+   gameOver = false;
    [self setupBackground];
    
    for (int i = 0; i < gridSize; i++) {
@@ -199,6 +201,7 @@ static CGFloat tileMarginHorizontal = 0;
 -(void)scanTiles {
    counter = 0;
    matched = false;
+   gameOver = false;
    Tile *tile[gridSize][gridSize];
    CCActionRemove *remove = [CCActionRemove action];
    for (int i = 0; i < gridSize; i++) {
@@ -409,7 +412,7 @@ static CGFloat tileMarginHorizontal = 0;
    }
    // no more empty space? call gameover method
    if (counter == 0 && matched == false) {
-      [self gameOver];
+      gameOver = true;
       return;
    }
 
@@ -418,6 +421,10 @@ static CGFloat tileMarginHorizontal = 0;
 -(BOOL)checkMatch {
    
    return matched;
+}
+
+-(BOOL)checkGameOver {
+   return gameOver;
 }
 
 # pragma mark Move
