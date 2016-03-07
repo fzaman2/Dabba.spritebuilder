@@ -15,6 +15,7 @@ static CGFloat columnWidth = 0;
 static CGFloat columnHeight = 0;
 static CGFloat tileMarginVertical = 0;
 static CGFloat tileMarginHorizontal = 0;
+int checkCounter = 14;
 
 @implementation Grid
 {
@@ -201,7 +202,7 @@ static CGFloat tileMarginHorizontal = 0;
 -(void)scanTiles {
    counter = 0;
    matched = false;
-   gameOver = false;
+//   gameOver = false;
    Tile *tile[gridSize][gridSize];
    CCActionRemove *remove = [CCActionRemove action];
    for (int i = 0; i < gridSize; i++) {
@@ -214,7 +215,7 @@ static CGFloat tileMarginHorizontal = 0;
          }
       }
    }
-
+   checkCounter = counter;
    for (int i = 0; i < 3; i++) {
    // Check Rows
       if(tile[0][0] != noTile && tile[0][1] != noTile && tile[0][2] != noTile && tile[0][3] != noTile )
@@ -410,9 +411,10 @@ static CGFloat tileMarginHorizontal = 0;
          }
       }
    }
-   // no more empty space? call gameover method
+   // no more empty space? set gameover
    if (counter == 0 && matched == false) {
       gameOver = true;
+      checkCounter = 14;
       return;
    }
 
@@ -427,6 +429,9 @@ static CGFloat tileMarginHorizontal = 0;
    return gameOver;
 }
 
+-(int)checkCounter {
+   return checkCounter;
+}
 # pragma mark Move
 
 -(void) setupGestures {
@@ -472,14 +477,6 @@ static CGFloat tileMarginHorizontal = 0;
 
 -(void)removeGridArray2 {
    gridArray[0][1] =  noTile;
-}
-
-# pragma mark gameover
-
--(void)gameOver {
-   CCScene *scene = [CCBReader loadAsScene:@"MainScene"];
-   [[CCDirector sharedDirector] replaceScene:scene withTransition:[CCTransition transitionFadeWithDuration:1.0]];
-
 }
 
 @end

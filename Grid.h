@@ -18,6 +18,6 @@
 -(void)scanTiles;
 -(BOOL)checkMatch;
 -(BOOL)checkGameOver;
--(void)gameOver;
+-(int)checkCounter;
 
 @end

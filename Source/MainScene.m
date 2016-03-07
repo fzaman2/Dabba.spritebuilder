@@ -12,6 +12,7 @@
    BOOL touchActivated;
    CGPoint direction;
    NSInteger _points;
+   CGPoint defaultPosition;
 
 }
 
@@ -31,6 +32,7 @@
    readyToRotate = true;
    newDirectionCounter = 0;
    prevDirectionCounter = 0;
+   _tenPoints.visible = false;
    // GestureRecognizer Code
    tapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(screenTapped)];
    tapped.numberOfTapsRequired = 1;
@@ -41,11 +43,12 @@
    
    [self rotateCCW];
 
-   [self performSelector:@selector(touchActivated) withObject:self afterDelay:1];
+   [self performSelector:@selector(touchActivated) withObject:self afterDelay:1.5];
 
    _highScore = [[NSUserDefaults standardUserDefaults] integerForKey:@"highScore"] ;
    _highscoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_highScore];
 
+   defaultPosition = CGPointMake(_tenPoints.position.x, _tenPoints.position.y);
 }
 
 //- (void)update:(CCTime)delta {
@@ -110,6 +113,7 @@
    touchActivated = true;
 }
 
+
 -(void)moveGrid {
    
    if (newDirectionCounter == 3 && prevDirectionCounter == 0) {
@@ -165,13 +169,10 @@
       }
       _highScore = [[NSUserDefaults standardUserDefaults] integerForKey:@"highScore"] ;
       _highscoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_highScore];
-      [_grid gameOver];
       
    }
    if([_grid checkMatch])
    {
-      _points += 10;
-      _scoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_points];
 
 
 //      [_grid spawnRandomTile];
