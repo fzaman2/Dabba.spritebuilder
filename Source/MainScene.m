@@ -49,6 +49,7 @@
    _highscoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_highScore];
 
    defaultPosition = CGPointMake(_tenPoints.position.x, _tenPoints.position.y);
+   _gameOverBox.visible = false;
 }
 
 //- (void)update:(CCTime)delta {
@@ -71,7 +72,12 @@
         [self rotateCW];
      }
       readyToRotate = false;
-      [self performSelector:@selector(readyToRotate) withObject:self afterDelay:1];
+      if([_grid checkCounter] <= 2) {
+         [self performSelector:@selector(readyToRotate) withObject:self afterDelay:2];
+      }
+      else {
+         [self performSelector:@selector(readyToRotate) withObject:self afterDelay:1];
+      }
    }
 }
 
@@ -113,6 +119,17 @@
    touchActivated = true;
 }
 
+-(void)setDefaultPosition {
+   _tenPoints.visible = false;
+   CCActionMoveTo *moveTo = [CCActionMoveTo actionWithDuration:0.1 position:defaultPosition];
+   CCActionFadeIn *fade = [CCActionFadeIn actionWithDuration:0.1];
+   CCActionSequence *sequence = [CCActionSequence actionWithArray:@[moveTo,fade]];
+   [_tenPoints runAction:sequence];
+
+   _points += 10;
+   _scoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_points];
+
+}
 
 -(void)moveGrid {
    
@@ -161,6 +178,7 @@
    [_grid scanTiles];
    if([_grid checkGameOver])
    {
+      [_grid removeFromParentAndCleanup:true];
       if(_points > _highScore)
       {
          
@@ -169,15 +187,29 @@
       }
       _highScore = [[NSUserDefaults standardUserDefaults] integerForKey:@"highScore"] ;
       _highscoreLabel.string = [NSString stringWithFormat:@"%ld", (long)_highScore];
+      _gameOverBox.visible = true;
       
    }
    if([_grid checkMatch])
    {
+      _tenPoints.visible = true;
+      CCActionMoveTo *moveTo = [CCActionMoveTo actionWithDuration:0.5 position:_scoreLabel.position];
+      CCActionFadeOut *fade = [CCActionFadeOut actionWithDuration:0.5];
+      CCActionSequence *sequence = [CCActionSequence actionWithArray:@[moveTo,fade]];
+      [_tenPoints runAction:sequence];
+      [self performSelector:@selector(setDefaultPosition) withObject:self afterDelay:1];
+      
 
 
 //      [_grid spawnRandomTile];
       [_grid move:direction];
       [self performSelector:@selector(scanTiles) withObject:self afterDelay:1];
    }
+}
+
+-(void) restart {
+   CCScene *scene = [CCBReader loadAsScene:@"MainScene"];
+   [[CCDirector sharedDirector] replaceScene:scene withTransition:[CCTransition transitionFadeWithDuration:0.5]];
+   
 }
 @end
